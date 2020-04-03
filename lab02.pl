@@ -14,6 +14,10 @@ my $flag1, my $flag2, my $flag3 = 0;
 my %answer;
 my $all_time = 0;
 
+my $wynik = "wynik.csv";
+open(DES, '>', $wynik) or die $!;
+print DES "przedmiot,forma_zajec,typ_studiow,liczba_godzin\n";
+
 while(my $line = <$fh>){
     if($line =~ m/DTSTART;.*T(\d{4})/){
 	$flag1 = 1;
@@ -34,13 +38,13 @@ while(my $line = <$fh>){
 	$flag3 = 0;
 	my $hours = (int(substr($endTime,0,2)) - int(substr($startTime,0,2)))*60;
 	my $minutes = int(substr($endTime,2,2)) - int(substr($startTime,2,2));
-	
 	my $tt = $hours + $minutes;
+
 	while($tt % 45 != 0){
 	    $tt-=5;
 	}
 	$all_time += $tt;
-
+	
 	my $itype = ""; # S1, S2, N1 or N2
 	my $iform = ""; # lab or lecture
 	
@@ -57,18 +61,20 @@ while(my $line = <$fh>){
 	}
 	
 	my $sub_form_type = $subject . " " . $iform . " " . $itype;
-	
 	if(!exists($answer{$sub_form_type})){
 	    $answer{$sub_form_type} = $tt;
 	}else{
 	    $answer{$sub_form_type} += $tt;
 	}
+	my $tth = $tt/45;
+	print DES "\"$subject\",\"$iform\",\"$itype\",\"$tth\"\n";
     }
 }
 close $fh;
+close (DES);
 
 my $lesson_hour = ($all_time)/45;
-printf "lessons hours: %.1f\n", $lesson_hour;
+printf "All hours: %.1f\n\n", $lesson_hour;
 
 foreach my $name (sort keys %answer){
     my $h = $answer{$name}/45;

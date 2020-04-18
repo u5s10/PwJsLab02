@@ -2,6 +2,11 @@
 use strict;
 use warnings;
 
+if(!defined $ARGV[0]){
+    print "No file given\n";
+    exit;
+}
+
 my $filename = $ARGV[0];
 open(my $fh, $filename)
     or die "Could not open file '$filename' $!";
@@ -39,13 +44,11 @@ while(my $line = <$fh>){
 	my $hours = (int(substr($endTime,0,2)) - int(substr($startTime,0,2)))*60;
 	my $minutes = int(substr($endTime,2,2)) - int(substr($startTime,2,2));
 	my $tt = $hours + $minutes;
-	print "before: $tt  ";
 	my $subvalue = 0;
 	while($tt % 45 != 0){
 	    $tt-=5;
 	    $subvalue+=5;
 	}
-	print "after: $tt subvalue: $subvalue  starttime: $startTime endtime: $endTime ";
 	$all_time += $tt;
 	
 	my $itype = ""; # S1, S2, N1 or N2
@@ -71,7 +74,6 @@ while(my $line = <$fh>){
 	}
 	my $tth = $tt/45;
 	print DES "\"$subject\",\"$iform\",\"$itype\",\"$tth\"\n";
-	print "\"$subject\",\"$iform\",\"$itype\",\"$tth\"\n";
     }
 }
 close $fh;

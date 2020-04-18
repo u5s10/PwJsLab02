@@ -39,25 +39,28 @@ while(my $line = <$fh>){
 	my $hours = (int(substr($endTime,0,2)) - int(substr($startTime,0,2)))*60;
 	my $minutes = int(substr($endTime,2,2)) - int(substr($startTime,2,2));
 	my $tt = $hours + $minutes;
-
+	print "before: $tt  ";
+	my $subvalue = 0;
 	while($tt % 45 != 0){
 	    $tt-=5;
+	    $subvalue+=5;
 	}
+	print "after: $tt subvalue: $subvalue  starttime: $startTime endtime: $endTime ";
 	$all_time += $tt;
 	
 	my $itype = ""; # S1, S2, N1 or N2
-	my $iform = ""; # lab or lecture
+	my $iform = ""; # lab or lecature
 	
 	if($group =~ m/^.*(L|W)_?.*$/){ # looking for form
 	    $iform = $1;
 	}else{
-	    $iform = "UNKNOWN";
+	    $iform = "N/A";
 	}
 
 	if($group =~ m/^.*_?(S1|S2|N1|N2)_.*$/){ # looking for type
 	    $itype = $1;
 	}else{
-	    $itype = "UNKNOWN";
+	    $itype = "N/A";
 	}
 	
 	my $sub_form_type = $subject . " " . $iform . " " . $itype;
@@ -68,6 +71,7 @@ while(my $line = <$fh>){
 	}
 	my $tth = $tt/45;
 	print DES "\"$subject\",\"$iform\",\"$itype\",\"$tth\"\n";
+	print "\"$subject\",\"$iform\",\"$itype\",\"$tth\"\n";
     }
 }
 close $fh;
